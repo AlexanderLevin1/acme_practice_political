@@ -1,0 +1,62 @@
+{% extends './layout.html' %}
+
+{% block content %}
+
+<div style="background-color:#f0f3f8;padding:15px 10px;">
+    <h5>Create Member</h5>
+    <form class="form-inline" action="/members" method="POST">
+      <div class="form-group" style="margin-right:15px">
+        <label style="font-weight:bold;margin-right:5px">Member Email</label>
+        <input class="form-control" type="text" name="email" placeholder="Valid email please"/>
+      </div>
+      <div class="form-group" style="margin-right:15px">
+        <label style="font-weight:bold;margin-right:5px">Member Candidate</label>
+        <select class="form-control" name="candidateId">
+          <option value="-1">None</option>
+            <!-- needs to be employee.manager.email -->
+            {% for member in members %}
+            <option value="{{member.id}}">{{member.email}}</option>
+            {% endfor %}
+        </select>
+      </div>
+        <button class="btn btn-primary">Create Member</button>
+    </form>
+  </div>
+  
+  <div style="display: flex;flex-wrap: wrap">
+  {% for member in members %}
+    <div class="member" style="margin:15 0px;width:33.33%;padding: 10px;">
+      <h6><strong>Member Name: </strong>{{ member.name }}</h6>
+      <h6><strong>Email Provider: </strong>{{ member.emailProvider }}</h6>
+      <h6><strong>Member Email:</strong></h6>
+      <h6><strong>Member Party:</strong>{{ member.partyId }}</h6>
+  
+      <form action="/members/{{member.id}}?_method=PUT" method="POST">
+  
+        <input class="form-control col-md-7" type="text" name="email" value="{{member.email}}" />
+        <br>
+        <h6><strong>Candidate Name:</strong> {{ Member.Candidate.name}}</h6>
+        <select class="form-control col-md-7" name="candidateId">
+          <option value="-1">None</option>
+          {% for m in members %}
+            <option {%if member.candidateId === m.id %}selected{%endif%} value="{{m.id}}">{{m.email}}</option>
+          {% endfor %}
+        </select>
+        <button style="margin:20px 0px 10px" class="btn btn-success">Update</button>
+      </form>
+  
+      <form style="margin:10px 0px" action="/members/{{member.id}}?_method=DELETE" method="POST">
+        <button class="btn btn-danger">Delete</button>
+      </form>
+  
+      <!-- {% if member.workers.length > 0 %} {{member.name}} is candidate for {%endif%} -->
+  
+      {% for m in members %}
+        {% if m.candidateId === member.id %}<span class="badge badge-warning">{{m.name}}</span>{% endif %}
+      {% endfor %}
+  
+    </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}
